@@ -1,0 +1,207 @@
+{
+  "categories": [
+    {
+      "id": "trivia",
+      "name": "Allgemeinwissen / Trivia",
+      "order": 1,
+      "eyebrow": "Wissen",
+      "blurb": "Fakten, kuriose Details und Fragen fuer breite Schultern im Allgemeinwissen.",
+      "tint": "sage",
+      "questions": [
+        {
+          "id": "trivia-100",
+          "points": 100,
+          "questionText": "Platzhalterfrage Allgemeinwissen 100",
+          "answerText": "Platzhalterantwort Allgemeinwissen 100",
+          "type": "freitext"
+        },
+        {
+          "id": "trivia-200",
+          "points": 200,
+          "questionText": "Welche Hauptstadt gehoert zu diesem Platzhalter?",
+          "answerText": "Hier steht spaeter die richtige Hauptstadt.",
+          "type": "multiple-choice",
+          "options": ["Antwort A", "Antwort B", "Antwort C", "Antwort D"]
+        },
+        {
+          "id": "trivia-300",
+          "points": 300,
+          "questionText": "Platzhalterfrage Allgemeinwissen 300",
+          "answerText": "Platzhalterantwort Allgemeinwissen 300",
+          "type": "schaetzfrage"
+        }
+      ]
+    },
+    {
+      "id": "music",
+      "name": "Musik",
+      "order": 2,
+      "eyebrow": "Hitparade",
+      "blurb": "Songs, Intros, Interpreten und Bonuspunkte fuer Jahr oder Kuenstler.",
+      "tint": "salmon",
+      "questions": [
+        {
+          "id": "music-100",
+          "points": 100,
+          "questionText": "Welcher Song wird hier angespielt?",
+          "answerText": "Songtitel und Interpret erscheinen hier als Platzhalter.",
+          "type": "musikfrage",
+          "music": {
+            "songTitle": "Platzhalter Songtitel",
+            "artist": "Platzhalter Interpret",
+            "clipLengths": [3, 7, 15],
+            "bonusPrompts": ["Jahr", "Interpret"]
+          }
+        },
+        {
+          "id": "music-200",
+          "points": 200,
+          "questionText": "Platzhalterfrage Musik 200",
+          "answerText": "Platzhalterantwort Musik 200",
+          "type": "freitext"
+        },
+        {
+          "id": "music-300",
+          "points": 300,
+          "questionText": "Welche Antwort passt zu diesem Musik-Quiz?",
+          "answerText": "Die korrekte Multiple-Choice-Antwort steht hier.",
+          "type": "multiple-choice",
+          "options": ["Option A", "Option B", "Option C", "Option D"]
+        }
+      ]
+    },
+    {
+      "id": "gaming",
+      "name": "Gaming",
+      "order": 3,
+      "eyebrow": "High Score",
+      "blurb": "Releases, Franchises und digitale Peinlichkeiten mit Controller-Faktor.",
+      "tint": "peach",
+      "questions": [
+        {
+          "id": "gaming-100",
+          "points": 100,
+          "questionText": "Platzhalterfrage Gaming 100",
+          "answerText": "Platzhalterantwort Gaming 100",
+          "type": "freitext"
+        },
+        {
+          "id": "gaming-200",
+          "points": 200,
+          "questionText": "Platzhalterfrage Gaming 200",
+          "answerText": "Platzhalterantwort Gaming 200",
+          "type": "bildfrage",
+          "mediaUrl": "/media/gaming-placeholder.png",
+          "mediaKind": "image"
+        },
+        {
+          "id": "gaming-300",
+          "points": 300,
+          "questionText": "Platzhalterfrage Gaming 300",
+          "answerText": "Platzhalterantwort Gaming 300",
+          "type": "schaetzfrage"
+        }
+      ]
+    },
+    {
+      "id": "movies",
+      "name": "Filme & Serien",
+      "order": 4,
+      "eyebrow": "Prime Time",
+      "blurb": "Zitate, Franchises, Serienwissen und grosse Leinwandmomente.",
+      "tint": "lime",
+      "questions": [
+        {
+          "id": "movies-100",
+          "points": 100,
+          "questionText": "Platzhalterfrage Filme & Serien 100",
+          "answerText": "Platzhalterantwort Filme & Serien 100",
+          "type": "freitext"
+        },
+        {
+          "id": "movies-200",
+          "points": 200,
+          "questionText": "Welche Antwort ist bei dieser Filmszene richtig?",
+          "answerText": "Platzhalterantwort Filme & Serien 200",
+          "type": "multiple-choice",
+          "options": ["Option A", "Option B", "Option C", "Option D"]
+        },
+        {
+          "id": "movies-300",
+          "points": 300,
+          "questionText": "Platzhalterfrage Filme & Serien 300",
+          "answerText": "Platzhalterantwort Filme & Serien 300",
+          "type": "bildfrage",
+          "mediaUrl": "/media/movie-placeholder.png",
+          "mediaKind": "image"
+        }
+      ]
+    },
+    {
+      "id": "vodafone",
+      "name": "Funny Vodafone Fragen",
+      "order": 5,
+      "eyebrow": "Inside Jokes",
+      "blurb": "Interne Running Gags, Slack-Momente und Teamwissen mit Insider-Faktor.",
+      "tint": "sky",
+      "questions": [
+        {
+          "id": "vodafone-100",
+          "points": 100,
+          "questionText": "Platzhalterfrage Vodafone 100",
+          "answerText": "Platzhalterantwort Vodafone 100",
+          "type": "freitext"
+        },
+        {
+          "id": "vodafone-200",
+          "points": 200,
+          "questionText": "Platzhalterfrage Vodafone 200",
+          "answerText": "Platzhalterantwort Vodafone 200",
+          "type": "multiple-choice",
+          "options": ["Option A", "Option B", "Option C", "Option D"]
+        },
+        {
+          "id": "vodafone-300",
+          "points": 300,
+          "questionText": "Platzhalterfrage Vodafone 300",
+          "answerText": "Platzhalterantwort Vodafone 300",
+          "type": "schaetzfrage"
+        }
+      ]
+    },
+    {
+      "id": "coding",
+      "name": "Coding",
+      "order": 6,
+      "eyebrow": "Compiler",
+      "blurb": "Syntax, Bugs, Framework-Wissen und spontane Nerd-Siege.",
+      "tint": "periwinkle",
+      "questions": [
+        {
+          "id": "coding-100",
+          "points": 100,
+          "questionText": "Platzhalterfrage Coding 100",
+          "answerText": "Platzhalterantwort Coding 100",
+          "type": "freitext"
+        },
+        {
+          "id": "coding-200",
+          "points": 200,
+          "questionText": "Welche Antwort ist fuer diese Coding-Frage korrekt?",
+          "answerText": "Platzhalterantwort Coding 200",
+          "type": "multiple-choice",
+          "options": ["Option A", "Option B", "Option C", "Option D"]
+        },
+        {
+          "id": "coding-300",
+          "points": 300,
+          "questionText": "Platzhalterfrage Coding 300",
+          "answerText": "Platzhalterantwort Coding 300",
+          "type": "bildfrage",
+          "mediaUrl": "/media/code-placeholder.png",
+          "mediaKind": "image"
+        }
+      ]
+    }
+  ]
+}

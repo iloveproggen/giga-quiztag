@@ -1,0 +1,176 @@
+@import "tailwindcss";
+
+:root {
+  --color-primary: #e91d2a;
+  --color-on-primary: #ffffff;
+  --color-canvas: #ffffff;
+  --color-surface: #ffffff;
+  --color-ink: #000000;
+  --color-frame-ink: #000000;
+  --color-yellow-sticker: #fcc20f;
+  --color-purple-stripe: #6a26a4;
+  --color-link: #0000ee;
+  --color-tint-olive: #8e8a25;
+  --color-tint-sage: #b3bd95;
+  --color-tint-salmon: #d77a7a;
+  --color-tint-peach: #e6915d;
+  --color-tint-lime: #c0d4a7;
+  --color-tint-sky: #9ab6c8;
+  --color-tint-steel: #a5b8c0;
+  --color-tint-periwinkle: #8c9ae0;
+
+  --font-display: "Arial Black", Arial, Helvetica, sans-serif;
+  --font-heading: Helvetica, Arial, sans-serif;
+  --font-body: "Times New Roman", Times, serif;
+
+  --type-display-size: 36px;
+  --type-display-weight: 900;
+  --type-display-line-height: 1;
+  --type-heading-1-size: 24px;
+  --type-heading-1-weight: 900;
+  --type-heading-1-line-height: 1.05;
+  --type-heading-2-size: 16px;
+  --type-heading-2-weight: 700;
+  --type-heading-2-line-height: 1.2;
+  --type-heading-3-size: 14px;
+  --type-heading-3-weight: 700;
+  --type-heading-3-line-height: 1.2;
+  --type-body-size: 14px;
+  --type-body-weight: 400;
+  --type-body-line-height: 1.4;
+  --type-body-sm-size: 12px;
+  --type-body-sm-weight: 400;
+  --type-body-sm-line-height: 1.4;
+  --type-caption-size: 11px;
+  --type-caption-weight: 400;
+  --type-caption-line-height: 1.35;
+  --type-button-size: 12px;
+  --type-button-weight: 700;
+  --type-button-line-height: 1;
+  --type-ui-label-size: 12px;
+  --type-ui-label-weight: 700;
+  --type-ui-label-line-height: 1;
+
+  --radius-none: 0px;
+  --radius-full: 9999px;
+
+  --space-xxs: 2px;
+  --space-xs: 4px;
+  --space-s: 6px;
+  --space-sm: 8px;
+  --space-m: 10px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 20px;
+  --space-xxl: 24px;
+  --space-section-sm: 32px;
+  --space-section: 40px;
+  --space-section-lg: 48px;
+
+  --shadow-hard: 4px 4px 0 0 var(--color-frame-ink);
+  --shadow-hard-sm: 3px 3px 0 0 var(--color-frame-ink);
+  --frame-border-width: 1px;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  margin: 0;
+}
+
+a {
+  color: var(--color-link);
+}
+
+.font-dell-display {
+  font-family: var(--font-display);
+}
+
+.font-dell-ui {
+  font-family: var(--font-heading);
+}
+
+.font-dell-body {
+  font-family: var(--font-body);
+}
+
+.dell-panel {
+  border: var(--frame-border-width) solid var(--color-frame-ink);
+  border-radius: var(--radius-none);
+  background: var(--color-surface);
+}
+
+.dell-shadow {
+  box-shadow: var(--shadow-hard);
+}
+
+.dell-shadow-sm {
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.dell-button {
+  border: var(--frame-border-width) solid var(--color-frame-ink);
+  border-radius: var(--radius-none);
+  font-family: var(--font-heading);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  line-height: var(--type-button-line-height);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.dell-button:disabled {
+  background: #d9d9d9;
+  color: #666666;
+  cursor: not-allowed;
+}
+
+.dell-button-primary {
+  background: var(--color-frame-ink);
+  color: var(--color-on-primary);
+}
+
+.dell-button-secondary {
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
+
+.dell-button-active {
+  background: var(--color-yellow-sticker);
+  color: var(--color-ink);
+}
+
+.dell-button-size-default {
+  min-height: 34px;
+  padding: var(--space-s) var(--space-lg);
+}
+
+.dell-button-size-compact {
+  min-height: 30px;
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--type-caption-size);
+}
+
+.dell-button-size-large {
+  min-height: 44px;
+  padding: var(--space-sm) var(--space-lg);
+  font-size: var(--type-heading-2-size);
+}
+
+.dell-input {
+  border: var(--frame-border-width) solid var(--color-frame-ink);
+  border-radius: var(--radius-none);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line-height);
+  padding: var(--space-xs) var(--space-s);
+  box-sizing: border-box;
+}
+
+.dell-link {
+  color: var(--color-link);
+  text-decoration: underline;
+}
