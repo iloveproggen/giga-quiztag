@@ -4,7 +4,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'IOA GigaQuiz 2026',
-  description: 'Interaktives Quizboard im Dell-1996-Stil fuer das IOA GigaQuiz.',
+  description: 'Interaktives Quizboard fuer das IOA GigaQuiz.',
 };
 
 export default function RootLayout({

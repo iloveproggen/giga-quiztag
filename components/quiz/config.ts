@@ -151,14 +151,14 @@ type RawQuizData = {
 };
 
 const tintMap: Record<RawTint, string> = {
-  olive: 'var(--color-tint-olive)',
-  sage: 'var(--color-tint-sage)',
-  salmon: 'var(--color-tint-salmon)',
-  peach: 'var(--color-tint-peach)',
-  lime: 'var(--color-tint-lime)',
-  sky: 'var(--color-tint-sky)',
-  steel: 'var(--color-tint-steel)',
-  periwinkle: 'var(--color-tint-periwinkle)',
+  olive: '#fef3c7',
+  sage: '#dcfce7',
+  salmon: '#fee2e2',
+  peach: '#ffedd5',
+  lime: '#ecfccb',
+  sky: '#e0f2fe',
+  steel: '#e5e7eb',
+  periwinkle: '#eef2ff',
 };
 
 const rawQuizData = quizData as RawQuizData;

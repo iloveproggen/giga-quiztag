@@ -113,7 +113,9 @@ function getSelectedCatalogQuestion(selectedQuestionKey: string) {
     : null;
 }
 
-function getStatusTone(status: string) {
+function getStatusTone(
+  status: string,
+): 'neutral' | 'success' | 'warning' | 'danger' | 'dark' {
   switch (status) {
     case 'running':
       return 'success';
