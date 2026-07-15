@@ -257,3 +257,19 @@ export const vodafoneEstimateQuestions = [
     answer: 'Platzhalterantwort Schaetzfrage 5',
   },
 ] as const;
+
+export function getSubquizQuestionCount() {
+  return (
+    gamingQuestions.length +
+    musicDecades.reduce((total, decade) => total + decade.questions.length, 0) +
+    generalKnowledgeSections.reduce(
+      (total, section) => total + section.items.length,
+      0,
+    ) +
+    movieJeopardyCategories.reduce(
+      (total, category) => total + category.questions.length,
+      0,
+    ) +
+    vodafoneEstimateQuestions.length
+  );
+}

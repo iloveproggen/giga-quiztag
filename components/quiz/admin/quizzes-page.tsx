@@ -721,6 +721,12 @@ export function QuizzesPage({
             Unterquiz-Uebersicht
           </FrameButton>
           <FrameButton
+            variant={state.gameStatus === 'paused' ? 'primary' : 'secondary'}
+            onClick={actions.pauseGame}
+          >
+            Pause
+          </FrameButton>
+          <FrameButton
             variant={state.presentationView === 'scores' ? 'primary' : 'secondary'}
             onClick={() => actions.setPresentationView('scores')}
           >

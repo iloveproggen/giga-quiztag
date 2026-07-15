@@ -377,7 +377,7 @@ export function useQuizStore() {
     () => Object.keys(state.answered).length,
     [state.answered],
   );
-  const remainingQuestions = getTotalQuestionCount() - answeredCount;
+  const remainingQuestions = Math.max(getTotalQuestionCount() - answeredCount, 0);
 
   const actions = useMemo(
     () => ({
@@ -454,7 +454,7 @@ export function useQuizStore() {
             ? question.categoryId
             : current.activeSubquiz,
           presentationView: 'question',
-          gameStatus: current.gameStatus === 'idle' ? 'running' : current.gameStatus,
+          gameStatus: 'running',
         }));
       },
       revealAnswer() {
@@ -467,6 +467,7 @@ export function useQuizStore() {
             ...current,
             answersRevealed: true,
             presentationView: 'answer',
+            gameStatus: 'running',
           };
         });
       },
@@ -713,6 +714,7 @@ export function useQuizStore() {
           ...current,
           activeSubquiz: isSubquizView(view) ? view : current.activeSubquiz,
           presentationView: view,
+          gameStatus: current.gameStatus === 'paused' ? 'running' : current.gameStatus,
         }));
       },
       toggleShowScores() {

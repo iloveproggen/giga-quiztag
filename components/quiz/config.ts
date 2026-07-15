@@ -1,4 +1,5 @@
 import quizData from '@/data/quiz-questions.json';
+import { getSubquizQuestionCount } from '@/components/quiz/presentation/subquiz-content';
 
 export const quizMeta = {
   title: 'IOA GigaQuiz 2026',
@@ -224,10 +225,7 @@ export function getQuestionKey(categoryId: string, questionId: string) {
 }
 
 export function getTotalQuestionCount() {
-  return categories.reduce(
-    (total, category) => total + category.questions.length,
-    0,
-  );
+  return getSubquizQuestionCount();
 }
 
 export function getDefaultTeam(index: number): Team {

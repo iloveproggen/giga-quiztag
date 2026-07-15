@@ -12,6 +12,7 @@ import { MusicView } from '@/components/quiz/presentation/music-view';
 import { PresentationHeader } from '@/components/quiz/presentation/presentation-header';
 import { QuestionView } from '@/components/quiz/presentation/question-view';
 import { ScoresView } from '@/components/quiz/presentation/scores-view';
+import { StatsView } from '@/components/quiz/presentation/stats-view';
 import { VodafoneEstimatesView } from '@/components/quiz/presentation/vodafone-estimates-view';
 import { useQuizStore } from '@/components/quiz/use-quiz-store';
 
@@ -48,11 +49,14 @@ export function PresentationPage() {
 
     if (state.gameStatus === 'paused') {
       return (
-        <IntroView
-          title="Pause"
-          message="Das Quiz ist kurz unterbrochen. Gleich geht es weiter."
-          tone="warning"
-          teams={state.teams}
+        <StatsView
+          ranking={ranking}
+          showScores={state.showScores}
+          answeredCount={answeredCount}
+          remainingQuestions={remainingQuestions}
+          totalQuestions={totalQuestionCount}
+          activeSubquiz={state.activeSubquiz}
+          presentationView={state.presentationView}
         />
       );
     }
