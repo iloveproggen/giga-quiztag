@@ -6,6 +6,8 @@ type FrameButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   size?: 'default' | 'compact' | 'large';
 };
 
+type StatusPillTone = 'neutral' | 'success' | 'warning' | 'danger' | 'dark';
+
 export function FrameButton({
   variant = 'primary',
   active = false,
@@ -16,53 +18,138 @@ export function FrameButton({
 }: FrameButtonProps) {
   const variantClass =
     variant === 'primary'
-      ? 'dell-button-primary'
+      ? 'ui-button-primary'
       : active
-        ? 'dell-button-active'
-        : 'dell-button-secondary';
+        ? 'ui-button-active'
+        : 'ui-button-secondary';
 
   const sizeClass =
     size === 'compact'
-      ? 'dell-button-size-compact'
+      ? 'ui-button-compact'
       : size === 'large'
-        ? 'dell-button-size-large'
-        : 'dell-button-size-default';
+        ? 'ui-button-large'
+        : 'ui-button-default';
 
   return (
     <button
       type={type}
-      className={`dell-button ${variantClass} ${sizeClass} ${className}`}
+      className={`ui-button ${variantClass} ${sizeClass} ${className}`}
       {...props}
     />
   );
 }
 
-export function SectionCard({
-  title,
+export function StatusPill({
   children,
-  bodyStyle,
-  sticker,
+  tone = 'neutral',
+  className = '',
 }: {
-  title: string;
   children: ReactNode;
-  bodyStyle?: CSSProperties;
-  sticker?: string;
+  tone?: StatusPillTone;
+  className?: string;
+}) {
+  const toneClass =
+    tone === 'success'
+      ? 'ui-pill-success'
+      : tone === 'warning'
+        ? 'ui-pill-warning'
+        : tone === 'danger'
+          ? 'ui-pill-danger'
+          : tone === 'dark'
+            ? 'ui-pill-dark'
+            : 'ui-pill-neutral';
+
+  return <span className={`ui-pill ${toneClass} ${className}`}>{children}</span>;
+}
+
+export function MetricCard({
+  label,
+  value,
+  helper,
+}: {
+  label: string;
+  value: ReactNode;
+  helper?: ReactNode;
 }) {
   return (
-    <section className="dell-panel dell-shadow overflow-hidden">
-      <div className="border-b border-[var(--color-frame-ink)] bg-[var(--color-canvas)] px-[var(--space-md)] py-[var(--space-sm)]">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="font-dell-ui text-[14px] font-bold uppercase">{title}</p>
-          {sticker ? (
-            <div className="-rotate-6 border border-[var(--color-frame-ink)] bg-[var(--color-yellow-sticker)] px-[var(--space-sm)] py-[var(--space-xs)]">
-              <span className="font-dell-ui text-[11px] font-bold uppercase">
-                {sticker}
-              </span>
-            </div>
-          ) : null}
+    <div className="ui-panel rounded-2xl border border-slate-200 p-4">
+      <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
+        {label}
+      </p>
+      <p className="mt-2 text-3xl font-bold tracking-tight text-slate-950">
+        {value}
+      </p>
+      {helper ? <p className="mt-2 text-sm text-slate-600">{helper}</p> : null}
+    </div>
+  );
+}
+
+export function TeamAvatar({
+  color,
+  label,
+  size = 'default',
+}: {
+  color?: string;
+  label: string;
+  size?: 'small' | 'default' | 'large';
+}) {
+  const sizeClass =
+    size === 'small'
+      ? 'h-9 w-9 text-sm'
+      : size === 'large'
+        ? 'h-16 w-16 text-2xl'
+        : 'h-12 w-12 text-lg';
+
+  return (
+    <div
+      className={`flex items-center justify-center rounded-2xl border border-slate-300 font-bold uppercase text-slate-900 ${sizeClass}`}
+      style={{ backgroundColor: color ?? '#e5e7eb' }}
+    >
+      {label}
+    </div>
+  );
+}
+
+export function SectionCard({
+  title,
+  subtitle,
+  children,
+  bodyStyle,
+  bodyClassName = '',
+  sticker,
+  actions,
+  className = '',
+}: {
+  title: string;
+  subtitle?: string;
+  children: ReactNode;
+  bodyStyle?: CSSProperties;
+  bodyClassName?: string;
+  sticker?: string;
+  actions?: ReactNode;
+  className?: string;
+}) {
+  return (
+    <section className={`ui-panel overflow-hidden ${className}`}>
+      <div className="border-b border-slate-200 bg-slate-50 px-5 py-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="space-y-1">
+            <p className="text-sm font-semibold uppercase tracking-[0.08em] text-slate-900">
+              {title}
+            </p>
+            {subtitle ? (
+              <p className="text-sm leading-6 text-slate-600">{subtitle}</p>
+            ) : null}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {actions}
+            {sticker ? <StatusPill>{sticker}</StatusPill> : null}
+          </div>
         </div>
       </div>
-      <div className="p-[var(--space-md)]" style={bodyStyle}>
+
+      <div className={`p-5 ${bodyClassName}`} style={bodyStyle}>
         {children}
       </div>
     </section>
@@ -77,12 +164,19 @@ export function HydrationPlaceholder({
   message: string;
 }) {
   return (
-    <div className="min-h-screen bg-[var(--color-canvas)] p-6">
-      <div className="dell-panel dell-shadow mx-auto flex min-h-[320px] w-full max-w-[960px] flex-col justify-center gap-4 bg-[var(--color-tint-steel)] px-[var(--space-section)] py-[var(--space-section)] text-center">
-        <p className="font-dell-display text-[clamp(32px,4vw,56px)] leading-none uppercase">
-          {title}
-        </p>
-        <p className="font-dell-body text-[18px] leading-[1.5]">{message}</p>
+    <div className="min-h-screen bg-slate-100 p-6">
+      <div className="mx-auto max-w-4xl">
+        <div className="ui-panel flex min-h-[320px] flex-col items-center justify-center gap-5 px-8 py-10 text-center">
+          <StatusPill tone="dark">Sync laeuft</StatusPill>
+          <div className="space-y-3">
+            <h1 className="text-4xl font-bold tracking-tight text-slate-950">
+              {title}
+            </h1>
+            <p className="mx-auto max-w-2xl text-lg leading-8 text-slate-600">
+              {message}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
