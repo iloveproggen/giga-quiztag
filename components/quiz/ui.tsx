@@ -1,6 +1,18 @@
-import type { ButtonHTMLAttributes, CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, ComponentPropsWithoutRef, ReactNode } from 'react';
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  Center,
+  Group,
+  Paper,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
 
-type FrameButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+type FrameButtonProps = ComponentPropsWithoutRef<'button'> & {
   variant?: 'primary' | 'secondary';
   active?: boolean;
   size?: 'default' | 'compact' | 'large';
@@ -14,28 +26,37 @@ export function FrameButton({
   size = 'default',
   className = '',
   type = 'button',
+  children,
   ...props
 }: FrameButtonProps) {
-  const variantClass =
-    variant === 'primary'
-      ? 'ui-button-primary'
-      : active
-        ? 'ui-button-active'
-        : 'ui-button-secondary';
-
-  const sizeClass =
-    size === 'compact'
-      ? 'ui-button-compact'
-      : size === 'large'
-        ? 'ui-button-large'
-        : 'ui-button-default';
+  const buttonVariant = variant === 'primary' ? 'filled' : 'default';
+  const buttonColor =
+    variant === 'primary' ? 'dark' : active ? 'gray' : 'gray';
+  const buttonSize =
+    size === 'compact' ? 'xs' : size === 'large' ? 'md' : 'sm';
 
   return (
-    <button
+    <Button
       type={type}
-      className={`ui-button ${variantClass} ${sizeClass} ${className}`}
+      variant={buttonVariant}
+      color={buttonColor}
+      radius="xl"
+      size={buttonSize}
+      className={className}
+      styles={{
+        root: {
+          textTransform: 'uppercase',
+          letterSpacing: '0.06em',
+          fontWeight: 700,
+          borderColor: active ? '#94a3b8' : undefined,
+          backgroundColor: active && variant !== 'primary' ? '#e2e8f0' : undefined,
+          color: active && variant !== 'primary' ? '#0f172a' : undefined,
+        },
+      }}
       {...props}
-    />
+    >
+      {children}
+    </Button>
   );
 }
 
@@ -72,15 +93,19 @@ export function MetricCard({
   helper?: ReactNode;
 }) {
   return (
-    <div className="ui-panel rounded-2xl border border-slate-200 p-4">
-      <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
+    <Paper withBorder radius="xl" p="md">
+      <Text size="xs" fw={600} tt="uppercase" c="dimmed">
         {label}
-      </p>
-      <p className="mt-2 text-3xl font-bold tracking-tight text-slate-950">
+      </Text>
+      <Text mt="xs" fz="1.875rem" fw={700} c="dark">
         {value}
-      </p>
-      {helper ? <p className="mt-2 text-sm text-slate-600">{helper}</p> : null}
-    </div>
+      </Text>
+      {helper ? (
+        <Text mt="xs" size="sm" c="dimmed">
+          {helper}
+        </Text>
+      ) : null}
+    </Paper>
   );
 }
 
@@ -101,12 +126,24 @@ export function TeamAvatar({
         : 'h-12 w-12 text-lg';
 
   return (
-    <div
-      className={`flex items-center justify-center rounded-2xl border border-slate-300 font-bold uppercase text-slate-900 ${sizeClass}`}
-      style={{ backgroundColor: color ?? '#e5e7eb' }}
+    <Avatar
+      radius="lg"
+      className={sizeClass}
+      styles={{
+        root: {
+          backgroundColor: color ?? '#e5e7eb',
+          color: '#0f172a',
+          border: '1px solid #cbd5e1',
+          fontWeight: 700,
+        },
+        placeholder: {
+          color: '#0f172a',
+          fontWeight: 700,
+        },
+      }}
     >
       {label}
-    </div>
+    </Avatar>
   );
 }
 
@@ -130,29 +167,31 @@ export function SectionCard({
   className?: string;
 }) {
   return (
-    <section className={`ui-panel overflow-hidden ${className}`}>
-      <div className="border-b border-slate-200 bg-slate-50 px-5 py-4">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div className="space-y-1">
-            <p className="text-sm font-semibold uppercase tracking-[0.08em] text-slate-900">
+    <Card withBorder radius="xl" padding={0} className={className}>
+      <Card.Section withBorder inheritPadding py="md" bg="gray.0">
+        <Group justify="space-between" align="flex-start" gap="sm" wrap="wrap">
+          <Stack gap={2}>
+            <Text size="sm" fw={600} tt="uppercase" c="dark">
               {title}
-            </p>
+            </Text>
             {subtitle ? (
-              <p className="text-sm leading-6 text-slate-600">{subtitle}</p>
+              <Text size="sm" c="dimmed">
+                {subtitle}
+              </Text>
             ) : null}
-          </div>
+          </Stack>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <Group gap="xs" wrap="wrap">
             {actions}
             {sticker ? <StatusPill>{sticker}</StatusPill> : null}
-          </div>
-        </div>
-      </div>
+          </Group>
+        </Group>
+      </Card.Section>
 
-      <div className={`p-5 ${bodyClassName}`} style={bodyStyle}>
+      <Box p="md" className={bodyClassName} style={bodyStyle}>
         {children}
-      </div>
-    </section>
+      </Box>
+    </Card>
   );
 }
 
@@ -165,19 +204,26 @@ export function HydrationPlaceholder({
 }) {
   return (
     <div className="min-h-screen bg-slate-100 p-6">
-      <div className="mx-auto max-w-4xl">
-        <div className="ui-panel flex min-h-[320px] flex-col items-center justify-center gap-5 px-8 py-10 text-center">
-          <StatusPill tone="dark">Sync laeuft</StatusPill>
-          <div className="space-y-3">
-            <h1 className="text-4xl font-bold tracking-tight text-slate-950">
-              {title}
-            </h1>
-            <p className="mx-auto max-w-2xl text-lg leading-8 text-slate-600">
-              {message}
-            </p>
-          </div>
-        </div>
-      </div>
+      <Center className="mx-auto max-w-4xl">
+        <Paper
+          withBorder
+          radius="xl"
+          p="xl"
+          className="flex min-h-[320px] w-full flex-col items-center justify-center text-center"
+        >
+          <Stack align="center" gap="md">
+            <StatusPill tone="dark">Sync laeuft</StatusPill>
+            <Stack gap="xs" align="center">
+              <Title order={1} c="dark">
+                {title}
+              </Title>
+              <Text maw={720} size="lg" c="dimmed">
+                {message}
+              </Text>
+            </Stack>
+          </Stack>
+        </Paper>
+      </Center>
     </div>
   );
 }

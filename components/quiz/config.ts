@@ -6,10 +6,10 @@ export const quizMeta = {
 } as const;
 
 export type AdminSection =
-  | 'start'
+  | 'dashboard'
   | 'teams'
-  | 'questions'
-  | 'moderator'
+  | 'quizzes'
+  | 'history'
   | 'scores'
   | 'final';
 
@@ -19,7 +19,34 @@ export type PresentationView =
   | 'answer'
   | 'scores'
   | 'top3'
-  | 'final';
+  | 'final'
+  | 'gaming'
+  | 'musik'
+  | 'allgemeinwissen'
+  | 'filme-serien'
+  | 'vodafone-schaetzfragen';
+
+export type SubquizView =
+  | 'gaming'
+  | 'musik'
+  | 'allgemeinwissen'
+  | 'filme-serien'
+  | 'vodafone-schaetzfragen';
+
+export const defaultSubquizView: SubquizView = 'gaming';
+
+export function isSubquizView(value: string): value is SubquizView {
+  switch (value) {
+    case 'gaming':
+    case 'musik':
+    case 'allgemeinwissen':
+    case 'filme-serien':
+    case 'vodafone-schaetzfragen':
+      return true;
+    default:
+      return false;
+  }
+}
 
 export type GameStatus = 'idle' | 'running' | 'paused' | 'finished';
 
@@ -41,6 +68,7 @@ export type MusicQuestionConfig = {
 
 export type QuizQuestion = {
   id: string;
+  category: string;
   points: number;
   questionText: string;
   answerText: string;
@@ -76,6 +104,7 @@ export type SelectedQuestion = {
   categoryTint: string;
   categoryOrder: number;
   questionId: string;
+  sourceQuestionId: string;
   questionText: string;
   answerText: string;
   points: number;
@@ -104,6 +133,7 @@ export type QuizState = {
   answered: Record<string, boolean>;
   selectedQuestion: SelectedQuestion | null;
   presentationView: PresentationView;
+  activeSubquiz: SubquizView | null;
   gameStatus: GameStatus;
   showScores: boolean;
   answersRevealed: boolean;
@@ -126,6 +156,7 @@ type RawTint =
 
 type RawQuizQuestion = {
   id: string;
+  category?: string;
   points: number;
   questionText: string;
   answerText: string;
@@ -173,6 +204,7 @@ export const categories: Category[] = rawQuizData.categories
     tint: tintMap[category.tint],
     questions: category.questions.map((question) => ({
       id: question.id,
+      category: question.category ?? category.name,
       points: question.points,
       questionText: question.questionText,
       answerText: question.answerText,
@@ -185,40 +217,7 @@ export const categories: Category[] = rawQuizData.categories
   }))
   .sort((a, b) => a.order - b.order);
 
-export const initialTeams: Team[] = [
-  {
-    id: 'team1',
-    name: 'Team Giga',
-    score: 0,
-    color: '#e91d2a',
-    icon: 'G',
-    members: [],
-  },
-  {
-    id: 'team2',
-    name: 'Quizards',
-    score: 0,
-    color: '#8c9ae0',
-    icon: 'Q',
-    members: [],
-  },
-  {
-    id: 'team3',
-    name: 'Packet Loss',
-    score: 0,
-    color: '#9ab6c8',
-    icon: 'P',
-    members: [],
-  },
-  {
-    id: 'team4',
-    name: 'GigaBrains',
-    score: 0,
-    color: '#c0d4a7',
-    icon: 'B',
-    members: [],
-  },
-];
+export const initialTeams: Team[] = [];
 
 export function getQuestionKey(categoryId: string, questionId: string) {
   return `${categoryId}-${questionId}`;
@@ -248,10 +247,11 @@ export function createSelectedQuestion(
 ): SelectedQuestion {
   return {
     categoryId: category.id,
-    categoryName: category.name,
+    categoryName: question.category,
     categoryTint: category.tint,
     categoryOrder: category.order,
     questionId: question.id,
+    sourceQuestionId: question.id,
     questionText: question.questionText,
     answerText: question.answerText,
     points: question.points,
@@ -272,6 +272,7 @@ export function createDefaultQuizState(): QuizState {
     answered: {},
     selectedQuestion: null,
     presentationView: 'board',
+    activeSubquiz: null,
     gameStatus: 'idle',
     showScores: true,
     answersRevealed: false,

@@ -10,6 +10,7 @@
       "questions": [
         {
           "id": "trivia-100",
+          "category": "Allgemeinwissen / Trivia",
           "points": 100,
           "questionText": "Platzhalterfrage Allgemeinwissen 100",
           "answerText": "Platzhalterantwort Allgemeinwissen 100",
@@ -17,14 +18,16 @@
         },
         {
           "id": "trivia-200",
+          "category": "Allgemeinwissen / Trivia",
           "points": 200,
-          "questionText": "Welche Hauptstadt gehoert zu diesem Platzhalter?",
-          "answerText": "Hier steht spaeter die richtige Hauptstadt.",
+          "questionText": "Platzhalterfrage Allgemeinwissen 200",
+          "answerText": "Platzhalterantwort Allgemeinwissen 200",
           "type": "multiple-choice",
           "options": ["Antwort A", "Antwort B", "Antwort C", "Antwort D"]
         },
         {
           "id": "trivia-300",
+          "category": "Allgemeinwissen / Trivia",
           "points": 300,
           "questionText": "Platzhalterfrage Allgemeinwissen 300",
           "answerText": "Platzhalterantwort Allgemeinwissen 300",
@@ -42,9 +45,10 @@
       "questions": [
         {
           "id": "music-100",
+          "category": "Musik",
           "points": 100,
-          "questionText": "Welcher Song wird hier angespielt?",
-          "answerText": "Songtitel und Interpret erscheinen hier als Platzhalter.",
+          "questionText": "Platzhalterfrage Musik 100",
+          "answerText": "Platzhalterantwort Musik 100",
           "type": "musikfrage",
           "music": {
             "songTitle": "Platzhalter Songtitel",
@@ -55,6 +59,7 @@
         },
         {
           "id": "music-200",
+          "category": "Musik",
           "points": 200,
           "questionText": "Platzhalterfrage Musik 200",
           "answerText": "Platzhalterantwort Musik 200",
@@ -62,9 +67,10 @@
         },
         {
           "id": "music-300",
+          "category": "Musik",
           "points": 300,
-          "questionText": "Welche Antwort passt zu diesem Musik-Quiz?",
-          "answerText": "Die korrekte Multiple-Choice-Antwort steht hier.",
+          "questionText": "Platzhalterfrage Musik 300",
+          "answerText": "Platzhalterantwort Musik 300",
           "type": "multiple-choice",
           "options": ["Option A", "Option B", "Option C", "Option D"]
         }
@@ -80,6 +86,7 @@
       "questions": [
         {
           "id": "gaming-100",
+          "category": "Gaming",
           "points": 100,
           "questionText": "Platzhalterfrage Gaming 100",
           "answerText": "Platzhalterantwort Gaming 100",
@@ -87,6 +94,7 @@
         },
         {
           "id": "gaming-200",
+          "category": "Gaming",
           "points": 200,
           "questionText": "Platzhalterfrage Gaming 200",
           "answerText": "Platzhalterantwort Gaming 200",
@@ -96,6 +104,7 @@
         },
         {
           "id": "gaming-300",
+          "category": "Gaming",
           "points": 300,
           "questionText": "Platzhalterfrage Gaming 300",
           "answerText": "Platzhalterantwort Gaming 300",
@@ -113,6 +122,7 @@
       "questions": [
         {
           "id": "movies-100",
+          "category": "Filme & Serien",
           "points": 100,
           "questionText": "Platzhalterfrage Filme & Serien 100",
           "answerText": "Platzhalterantwort Filme & Serien 100",
@@ -120,14 +130,16 @@
         },
         {
           "id": "movies-200",
+          "category": "Filme & Serien",
           "points": 200,
-          "questionText": "Welche Antwort ist bei dieser Filmszene richtig?",
+          "questionText": "Platzhalterfrage Filme & Serien 200",
           "answerText": "Platzhalterantwort Filme & Serien 200",
           "type": "multiple-choice",
           "options": ["Option A", "Option B", "Option C", "Option D"]
         },
         {
           "id": "movies-300",
+          "category": "Filme & Serien",
           "points": 300,
           "questionText": "Platzhalterfrage Filme & Serien 300",
           "answerText": "Platzhalterantwort Filme & Serien 300",
@@ -147,6 +159,7 @@
       "questions": [
         {
           "id": "vodafone-100",
+          "category": "Funny Vodafone Fragen",
           "points": 100,
           "questionText": "Platzhalterfrage Vodafone 100",
           "answerText": "Platzhalterantwort Vodafone 100",
@@ -154,6 +167,7 @@
         },
         {
           "id": "vodafone-200",
+          "category": "Funny Vodafone Fragen",
           "points": 200,
           "questionText": "Platzhalterfrage Vodafone 200",
           "answerText": "Platzhalterantwort Vodafone 200",
@@ -162,6 +176,7 @@
         },
         {
           "id": "vodafone-300",
+          "category": "Funny Vodafone Fragen",
           "points": 300,
           "questionText": "Platzhalterfrage Vodafone 300",
           "answerText": "Platzhalterantwort Vodafone 300",
@@ -179,6 +194,7 @@
       "questions": [
         {
           "id": "coding-100",
+          "category": "Coding",
           "points": 100,
           "questionText": "Platzhalterfrage Coding 100",
           "answerText": "Platzhalterantwort Coding 100",
@@ -186,14 +202,16 @@
         },
         {
           "id": "coding-200",
+          "category": "Coding",
           "points": 200,
-          "questionText": "Welche Antwort ist fuer diese Coding-Frage korrekt?",
+          "questionText": "Platzhalterfrage Coding 200",
           "answerText": "Platzhalterantwort Coding 200",
           "type": "multiple-choice",
           "options": ["Option A", "Option B", "Option C", "Option D"]
         },
         {
           "id": "coding-300",
+          "category": "Coding",
           "points": 300,
           "questionText": "Platzhalterfrage Coding 300",
           "answerText": "Platzhalterantwort Coding 300",

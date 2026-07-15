@@ -13,6 +13,7 @@ import {
   getDefaultTeam,
   getQuestionKey,
   getTotalQuestionCount,
+  isSubquizView,
   type GameEvent,
   type GameStatus,
   type PresentationView,
@@ -22,7 +23,7 @@ import {
   sortRanking,
 } from '@/components/quiz/config';
 
-const STORAGE_KEY = 'giga-quiz-state-v2';
+const STORAGE_KEY = 'giga-quiz-state-v3';
 const CHANNEL_NAME = 'giga-quiz-state';
 
 type TeamUpdate = {
@@ -61,6 +62,10 @@ function normalizeSelectedQuestion(value: unknown): SelectedQuestion | null {
     categoryTint: value.categoryTint,
     categoryOrder: value.categoryOrder,
     questionId: value.questionId,
+    sourceQuestionId:
+      typeof value.sourceQuestionId === 'string'
+        ? value.sourceQuestionId
+        : value.questionId,
     questionText: value.questionText,
     answerText: value.answerText,
     points: value.points,
@@ -178,11 +183,18 @@ function normalizeState(value: unknown): QuizState {
         .filter((event): event is GameEvent => event !== null)
     : [];
 
+  const selectedQuestion = normalizeSelectedQuestion(value.selectedQuestion);
+
   return {
     teams: teams.length > 0 ? teams : fallback.teams,
     answered,
-    selectedQuestion: normalizeSelectedQuestion(value.selectedQuestion),
+    selectedQuestion,
     presentationView: normalizePresentationView(value.presentationView),
+    activeSubquiz: normalizeSubquizView(
+      value.activeSubquiz,
+      selectedQuestion?.categoryId,
+      value.presentationView,
+    ),
     gameStatus: normalizeGameStatus(value.gameStatus),
     showScores:
       typeof value.showScores === 'boolean' ? value.showScores : true,
@@ -214,10 +226,41 @@ function normalizePresentationView(value: unknown): PresentationView {
     case 'scores':
     case 'top3':
     case 'final':
+    case 'gaming':
+    case 'musik':
+    case 'allgemeinwissen':
+    case 'filme-serien':
+    case 'vodafone-schaetzfragen':
       return value;
     default:
       return 'board';
   }
+}
+
+function normalizeSubquizView(
+  value: unknown,
+  fallbackQuestionCategoryId?: string,
+  fallbackPresentationView?: unknown,
+) {
+  if (typeof value === 'string' && isSubquizView(value)) {
+    return value;
+  }
+
+  if (
+    typeof fallbackQuestionCategoryId === 'string' &&
+    isSubquizView(fallbackQuestionCategoryId)
+  ) {
+    return fallbackQuestionCategoryId;
+  }
+
+  if (
+    typeof fallbackPresentationView === 'string' &&
+    isSubquizView(fallbackPresentationView)
+  ) {
+    return fallbackPresentationView;
+  }
+
+  return null;
 }
 
 function normalizeGameStatus(value: unknown): GameStatus {
@@ -341,7 +384,27 @@ export function useQuizStore() {
       startNewGame() {
         commit(() => ({
           ...createDefaultQuizState(),
+          gameStatus: 'idle',
+          presentationView: 'board',
+        }));
+      },
+      startGame() {
+        commit((current) => ({
+          ...current,
           gameStatus: 'running',
+          selectedQuestion: null,
+          answersRevealed: false,
+          activeSubquiz: current.activeSubquiz,
+          presentationView: current.activeSubquiz ?? 'board',
+        }));
+      },
+      openQuizzesSelection() {
+        commit((current) => ({
+          ...current,
+          gameStatus: current.gameStatus === 'idle' ? 'running' : current.gameStatus,
+          selectedQuestion: null,
+          answersRevealed: false,
+          activeSubquiz: null,
           presentationView: 'board',
         }));
       },
@@ -387,6 +450,9 @@ export function useQuizStore() {
           ...current,
           selectedQuestion: question,
           answersRevealed: false,
+          activeSubquiz: isSubquizView(question.categoryId)
+            ? question.categoryId
+            : current.activeSubquiz,
           presentationView: 'question',
           gameStatus: current.gameStatus === 'idle' ? 'running' : current.gameStatus,
         }));
@@ -409,7 +475,7 @@ export function useQuizStore() {
           ...current,
           selectedQuestion: null,
           answersRevealed: false,
-          presentationView: 'board',
+          presentationView: current.activeSubquiz ?? 'board',
         }));
       },
       closeQuestionWithoutPoints() {
@@ -427,13 +493,13 @@ export function useQuizStore() {
               [
                 getQuestionKey(
                   selectedQuestion.categoryId,
-                  selectedQuestion.questionId,
+                  selectedQuestion.sourceQuestionId,
                 )
               ]: true,
             },
             selectedQuestion: null,
             answersRevealed: false,
-            presentationView: 'board',
+            presentationView: current.activeSubquiz ?? 'board',
             gameEvents: appendEvent(current, {
               label: getRoundLabel(current),
               questionId: selectedQuestion.questionId,
@@ -469,13 +535,13 @@ export function useQuizStore() {
               [
                 getQuestionKey(
                   selectedQuestion.categoryId,
-                  selectedQuestion.questionId,
+                  selectedQuestion.sourceQuestionId,
                 )
               ]: true,
             },
             selectedQuestion: null,
             answersRevealed: false,
-            presentationView: 'board',
+            presentationView: current.activeSubquiz ?? 'board',
             gameEvents: appendEvent(current, {
               label: getRoundLabel(current),
               teamId: team.id,
@@ -576,12 +642,31 @@ export function useQuizStore() {
           };
         });
       },
-      deleteTeam(teamId: string) {
+      syncTeam(teamId: string, updates: TeamUpdate) {
         commit((current) => {
-          if (current.teams.length <= 1) {
+          const existingTeam = current.teams.find((team) => team.id === teamId);
+          if (!existingTeam) {
             return current;
           }
 
+          return {
+            ...current,
+            teams: current.teams.map((team) =>
+              team.id === teamId
+                ? {
+                    ...team,
+                    name: updates.name ?? team.name,
+                    color: updates.color ?? team.color,
+                    icon: updates.icon ?? team.icon,
+                    members: updates.members ?? team.members,
+                  }
+                : team,
+            ),
+          };
+        });
+      },
+      deleteTeam(teamId: string) {
+        commit((current) => {
           const team = current.teams.find((entry) => entry.id === teamId);
           if (!team) {
             return current;
@@ -603,9 +688,30 @@ export function useQuizStore() {
           };
         });
       },
+      deleteAllTeams() {
+        commit((current) => {
+          if (current.teams.length === 0) {
+            return current;
+          }
+
+          return {
+            ...current,
+            teams: [],
+            finalModeActive: false,
+            finalTeams: [],
+            finalWinnerId: null,
+            gameEvents: appendEvent(current, {
+              label: 'Team',
+              pointsChanged: 0,
+              note: 'Alle Teams wurden geloescht.',
+            }),
+          };
+        });
+      },
       setPresentationView(view: PresentationView) {
         commit((current) => ({
           ...current,
+          activeSubquiz: isSubquizView(view) ? view : current.activeSubquiz,
           presentationView: view,
         }));
       },

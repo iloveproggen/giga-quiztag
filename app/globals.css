@@ -37,6 +37,22 @@ a {
     0 10px 30px rgba(15, 23, 42, 0.04);
 }
 
+.ui-panel.border-slate-700 {
+  border-color: #334155;
+}
+
+.ui-panel.border-slate-800 {
+  border-color: #1e293b;
+}
+
+.ui-panel.bg-slate-900 {
+  background: #0f172a;
+}
+
+.ui-panel.bg-slate-950 {
+  background: #020617;
+}
+
 .ui-button {
   display: inline-flex;
   align-items: center;
