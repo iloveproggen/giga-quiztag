@@ -15,16 +15,18 @@ import {
   getTotalQuestionCount,
   isSubquizView,
   type GameEvent,
-  type GameStatus,
   type PresentationView,
   type QuizState,
   type SelectedQuestion,
-  type Team,
   sortRanking,
 } from '@/components/quiz/config';
+import { normalizeQuizState } from '@/lib/quiz-state';
 
 const STORAGE_KEY = 'giga-quiz-state-v3';
 const CHANNEL_NAME = 'giga-quiz-state';
+const QUIZ_STATE_API_ROUTE = '/api/quiz-state';
+const BUZZER_API_ROUTE = '/api/buzzer';
+const SERVER_POLL_INTERVAL_MS = 1500;
 
 type TeamUpdate = {
   name?: string;
@@ -33,261 +35,73 @@ type TeamUpdate = {
   members?: string[];
 };
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null;
-}
+type StoredStateSnapshot = {
+  hasStoredValue: boolean;
+  state: QuizState;
+};
 
-function normalizeSelectedQuestion(value: unknown): SelectedQuestion | null {
-  if (!isRecord(value)) {
-    return null;
-  }
+type SyncResponse = {
+  error?: string;
+  state?: unknown;
+};
 
-  if (
-    typeof value.categoryId !== 'string' ||
-    typeof value.categoryName !== 'string' ||
-    typeof value.categoryTint !== 'string' ||
-    typeof value.categoryOrder !== 'number' ||
-    typeof value.questionId !== 'string' ||
-    typeof value.questionText !== 'string' ||
-    typeof value.answerText !== 'string' ||
-    typeof value.points !== 'number' ||
-    typeof value.type !== 'string'
-  ) {
-    return null;
-  }
+type BuzzerAdminRequest =
+  | {
+      action: 'set-enabled';
+      isEnabled: boolean;
+    }
+  | {
+      action: 'reset-winner';
+    };
 
-  return {
-    categoryId: value.categoryId,
-    categoryName: value.categoryName,
-    categoryTint: value.categoryTint,
-    categoryOrder: value.categoryOrder,
-    questionId: value.questionId,
-    sourceQuestionId:
-      typeof value.sourceQuestionId === 'string'
-        ? value.sourceQuestionId
-        : value.questionId,
-    questionText: value.questionText,
-    answerText: value.answerText,
-    points: value.points,
-    type: value.type as SelectedQuestion['type'],
-    mediaUrl: typeof value.mediaUrl === 'string' ? value.mediaUrl : undefined,
-    mediaKind:
-      value.mediaKind === 'image' ||
-      value.mediaKind === 'audio' ||
-      value.mediaKind === 'video'
-        ? value.mediaKind
-        : undefined,
-    options: Array.isArray(value.options)
-      ? value.options.filter((item): item is string => typeof item === 'string')
-      : undefined,
-    music: isRecord(value.music)
-      ? {
-          songTitle:
-            typeof value.music.songTitle === 'string'
-              ? value.music.songTitle
-              : '',
-          artist:
-            typeof value.music.artist === 'string' ? value.music.artist : '',
-          clipLengths: Array.isArray(value.music.clipLengths)
-            ? value.music.clipLengths.filter(
-                (item): item is number => typeof item === 'number',
-              )
-            : [],
-          bonusPrompts: Array.isArray(value.music.bonusPrompts)
-            ? value.music.bonusPrompts.filter(
-                (item): item is string => typeof item === 'string',
-              )
-            : undefined,
-        }
-      : undefined,
-  };
-}
+type ApplyStateOptions = {
+  broadcast?: boolean;
+  persistLocal?: boolean;
+};
 
-function normalizeTeam(team: unknown, index: number): Team | null {
-  if (!isRecord(team)) {
-    return null;
-  }
-
-  return {
-    id: typeof team.id === 'string' ? team.id : `team-${index + 1}`,
-    name:
-      typeof team.name === 'string' ? team.name : `Team ${index + 1}`,
-    score:
-      typeof team.score === 'number' && Number.isFinite(team.score)
-        ? Math.max(0, team.score)
-        : 0,
-    color: typeof team.color === 'string' ? team.color : '#d77a7a',
-    icon: typeof team.icon === 'string' ? team.icon : 'T',
-    members: Array.isArray(team.members)
-      ? team.members.filter((item): item is string => typeof item === 'string')
-      : [],
-  };
-}
-
-function normalizeGameEvent(value: unknown): GameEvent | null {
-  if (!isRecord(value)) {
-    return null;
-  }
-
-  if (
-    typeof value.id !== 'string' ||
-    typeof value.timestamp !== 'number' ||
-    typeof value.label !== 'string' ||
-    typeof value.pointsChanged !== 'number' ||
-    typeof value.note !== 'string'
-  ) {
-    return null;
-  }
-
-  return {
-    id: value.id,
-    timestamp: value.timestamp,
-    label: value.label,
-    teamId: typeof value.teamId === 'string' ? value.teamId : undefined,
-    teamName: typeof value.teamName === 'string' ? value.teamName : undefined,
-    questionId:
-      typeof value.questionId === 'string' ? value.questionId : undefined,
-    questionText:
-      typeof value.questionText === 'string' ? value.questionText : undefined,
-    categoryName:
-      typeof value.categoryName === 'string' ? value.categoryName : undefined,
-    pointsChanged: value.pointsChanged,
-    note: value.note,
-  };
-}
-
-function normalizeState(value: unknown): QuizState {
-  const fallback = createDefaultQuizState();
-
-  if (!isRecord(value)) {
-    return fallback;
-  }
-
-  const teams = Array.isArray(value.teams)
-    ? value.teams
-        .map((team, index) => normalizeTeam(team, index))
-        .filter((team): team is Team => team !== null)
-    : fallback.teams;
-
-  const answered = isRecord(value.answered)
-    ? Object.fromEntries(
-        Object.entries(value.answered).filter(
-          (entry): entry is [string, boolean] => typeof entry[1] === 'boolean',
-        ),
-      )
-    : {};
-
-  const gameEvents = Array.isArray(value.gameEvents)
-    ? value.gameEvents
-        .map(normalizeGameEvent)
-        .filter((event): event is GameEvent => event !== null)
-    : [];
-
-  const selectedQuestion = normalizeSelectedQuestion(value.selectedQuestion);
-
-  return {
-    teams: teams.length > 0 ? teams : fallback.teams,
-    answered,
-    selectedQuestion,
-    presentationView: normalizePresentationView(value.presentationView),
-    activeSubquiz: normalizeSubquizView(
-      value.activeSubquiz,
-      selectedQuestion?.categoryId,
-      value.presentationView,
-    ),
-    gameStatus: normalizeGameStatus(value.gameStatus),
-    showScores:
-      typeof value.showScores === 'boolean' ? value.showScores : true,
-    answersRevealed:
-      typeof value.answersRevealed === 'boolean'
-        ? value.answersRevealed
-        : false,
-    finalModeActive:
-      typeof value.finalModeActive === 'boolean'
-        ? value.finalModeActive
-        : false,
-    finalTeams: Array.isArray(value.finalTeams)
-      ? value.finalTeams.filter((item): item is string => typeof item === 'string')
-      : [],
-    finalWinnerId:
-      typeof value.finalWinnerId === 'string' ? value.finalWinnerId : null,
-    gameEvents,
-    updatedAt:
-      typeof value.updatedAt === 'number' && Number.isFinite(value.updatedAt)
-        ? value.updatedAt
-        : fallback.updatedAt,
-  };
-}
-
-function normalizePresentationView(value: unknown): PresentationView {
-  switch (value) {
-    case 'question':
-    case 'answer':
-    case 'scores':
-    case 'top3':
-    case 'final':
-    case 'gaming':
-    case 'musik':
-    case 'allgemeinwissen':
-    case 'filme-serien':
-    case 'vodafone-schaetzfragen':
-      return value;
-    default:
-      return 'board';
-  }
-}
-
-function normalizeSubquizView(
-  value: unknown,
-  fallbackQuestionCategoryId?: string,
-  fallbackPresentationView?: unknown,
-) {
-  if (typeof value === 'string' && isSubquizView(value)) {
-    return value;
-  }
-
-  if (
-    typeof fallbackQuestionCategoryId === 'string' &&
-    isSubquizView(fallbackQuestionCategoryId)
-  ) {
-    return fallbackQuestionCategoryId;
-  }
-
-  if (
-    typeof fallbackPresentationView === 'string' &&
-    isSubquizView(fallbackPresentationView)
-  ) {
-    return fallbackPresentationView;
-  }
-
-  return null;
-}
-
-function normalizeGameStatus(value: unknown): GameStatus {
-  switch (value) {
-    case 'running':
-    case 'paused':
-    case 'finished':
-      return value;
-    default:
-      return 'idle';
-  }
-}
-
-function readStoredState() {
+function readStoredSnapshot(): StoredStateSnapshot {
   if (typeof window === 'undefined') {
-    return createDefaultQuizState();
+    return {
+      hasStoredValue: false,
+      state: createDefaultQuizState(),
+    };
   }
 
   const raw = window.localStorage.getItem(STORAGE_KEY);
   if (!raw) {
-    return createDefaultQuizState();
+    return {
+      hasStoredValue: false,
+      state: createDefaultQuizState(),
+    };
   }
 
   try {
-    return normalizeState(JSON.parse(raw));
-  } catch {
-    return createDefaultQuizState();
+    return {
+      hasStoredValue: true,
+      state: normalizeQuizState(JSON.parse(raw)),
+    };
+  } catch (error) {
+    console.error('Failed to parse quiz state from localStorage.', error);
+    return {
+      hasStoredValue: false,
+      state: createDefaultQuizState(),
+    };
+  }
+}
+
+function persistLocalState(
+  state: QuizState,
+  channel: BroadcastChannel | null,
+  broadcast: boolean,
+) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+
+  if (broadcast) {
+    channel?.postMessage(state);
   }
 }
 
@@ -318,12 +132,144 @@ function getRoundLabel(current: QuizState) {
 }
 
 export function useQuizStore() {
-  const [state, setState] = useState<QuizState>(readStoredState);
+  const [initialSnapshot] = useState<StoredStateSnapshot>(() => readStoredSnapshot());
+  const [state, setState] = useState<QuizState>(() => initialSnapshot.state);
   const channelRef = useRef<BroadcastChannel | null>(null);
+  const latestStateRef = useRef<QuizState>(initialSnapshot.state);
   const isHydrated = useSyncExternalStore(
     () => () => undefined,
     () => true,
     () => false,
+  );
+
+  const applyState = useCallback(
+    (nextState: QuizState, options: ApplyStateOptions = {}) => {
+      latestStateRef.current = nextState;
+
+      if (options.persistLocal ?? true) {
+        persistLocalState(
+          nextState,
+          channelRef.current,
+          options.broadcast ?? true,
+        );
+      }
+
+      setState(nextState);
+    },
+    [],
+  );
+
+  const adoptExternalState = useCallback(
+    (candidateState: QuizState, broadcast = false) => {
+      if (candidateState.updatedAt <= latestStateRef.current.updatedAt) {
+        return;
+      }
+
+      applyState(candidateState, {
+        broadcast,
+        persistLocal: true,
+      });
+    },
+    [applyState],
+  );
+
+  const fetchStateFromServer = useCallback(
+    async (preferRemote: boolean) => {
+      try {
+        const response = await fetch(QUIZ_STATE_API_ROUTE, {
+          cache: 'no-store',
+        });
+        const payload = (await response.json()) as SyncResponse;
+
+        if (!response.ok) {
+          console.error(
+            payload.error ?? 'Quiz state could not be loaded from backend.',
+          );
+          return;
+        }
+
+        if (!payload.state) {
+          console.error('Quiz state response did not include a state payload.');
+          return;
+        }
+
+        const remoteState = normalizeQuizState(payload.state);
+
+        if (preferRemote || remoteState.updatedAt > latestStateRef.current.updatedAt) {
+          applyState(remoteState, {
+            broadcast: false,
+            persistLocal: true,
+          });
+        }
+      } catch (error) {
+        console.error('Failed to load quiz state from backend.', error);
+      }
+    },
+    [applyState],
+  );
+
+  const saveStateToServer = useCallback(
+    async (nextState: QuizState, baseUpdatedAt: number) => {
+      try {
+        const response = await fetch(QUIZ_STATE_API_ROUTE, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          cache: 'no-store',
+          body: JSON.stringify({
+            state: nextState,
+            baseUpdatedAt,
+          }),
+        });
+        const payload = (await response.json()) as SyncResponse;
+
+        if (response.ok) {
+          return;
+        }
+
+        if (response.status === 409 && payload.state) {
+          adoptExternalState(normalizeQuizState(payload.state));
+          return;
+        }
+
+        console.error(payload.error ?? 'Quiz state could not be saved to backend.');
+      } catch (error) {
+        console.error('Failed to save quiz state to backend.', error);
+      }
+    },
+    [adoptExternalState],
+  );
+
+  const updateBuzzerState = useCallback(
+    async (payload: BuzzerAdminRequest) => {
+      try {
+        const response = await fetch(BUZZER_API_ROUTE, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          cache: 'no-store',
+          body: JSON.stringify(payload),
+        });
+        const result = (await response.json()) as SyncResponse;
+
+        if (!response.ok || !result.state) {
+          console.error(result.error ?? 'Buzzer state could not be saved to backend.');
+          void fetchStateFromServer(false);
+          return;
+        }
+
+        applyState(normalizeQuizState(result.state), {
+          broadcast: true,
+          persistLocal: true,
+        });
+      } catch (error) {
+        console.error('Failed to save buzzer state to backend.', error);
+        void fetchStateFromServer(false);
+      }
+    },
+    [applyState, fetchStateFromServer],
   );
 
   useEffect(() => {
@@ -333,9 +279,9 @@ export function useQuizStore() {
       }
 
       try {
-        setState(normalizeState(JSON.parse(event.newValue)));
-      } catch {
-        setState(createDefaultQuizState());
+        adoptExternalState(normalizeQuizState(JSON.parse(event.newValue)));
+      } catch (error) {
+        console.error('Failed to parse quiz state from storage event.', error);
       }
     };
 
@@ -344,33 +290,50 @@ export function useQuizStore() {
     if ('BroadcastChannel' in window) {
       const channel = new BroadcastChannel(CHANNEL_NAME);
       channel.onmessage = (event) => {
-        setState(normalizeState(event.data));
+        adoptExternalState(normalizeQuizState(event.data));
       };
       channelRef.current = channel;
     }
 
+    const initialFetchTimer = window.setTimeout(() => {
+      void fetchStateFromServer(!initialSnapshot.hasStoredValue);
+    }, 0);
+
+    const intervalId = window.setInterval(() => {
+      void fetchStateFromServer(false);
+    }, SERVER_POLL_INTERVAL_MS);
+
     return () => {
+      window.clearTimeout(initialFetchTimer);
+      window.clearInterval(intervalId);
       window.removeEventListener('storage', handleStorage);
       channelRef.current?.close();
       channelRef.current = null;
     };
-  }, []);
+  }, [adoptExternalState, fetchStateFromServer, initialSnapshot.hasStoredValue]);
 
-  const commit = useCallback((updater: (current: QuizState) => QuizState) => {
-    setState((current) => {
-      const next = {
-        ...updater(current),
+  const commit = useCallback(
+    (updater: (current: QuizState) => QuizState) => {
+      const currentState = latestStateRef.current;
+      const candidateState = updater(currentState);
+
+      if (candidateState === currentState) {
+        return;
+      }
+
+      const nextState = {
+        ...candidateState,
         updatedAt: Date.now(),
       };
 
-      if (typeof window !== 'undefined') {
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-        channelRef.current?.postMessage(next);
-      }
-
-      return next;
-    });
-  }, []);
+      applyState(nextState, {
+        broadcast: true,
+        persistLocal: true,
+      });
+      void saveStateToServer(nextState, currentState.updatedAt);
+    },
+    [applyState, saveStateToServer],
+  );
 
   const ranking = useMemo(() => sortRanking(state.teams), [state.teams]);
   const answeredCount = useMemo(
@@ -382,8 +345,13 @@ export function useQuizStore() {
   const actions = useMemo(
     () => ({
       startNewGame() {
-        commit(() => ({
+        commit((current) => ({
           ...createDefaultQuizState(),
+          teams: current.teams.map((team) => ({
+            ...team,
+            score: 0,
+            members: [...(team.members ?? [])],
+          })),
           gameStatus: 'idle',
           presentationView: 'board',
         }));
@@ -679,6 +647,13 @@ export function useQuizStore() {
             finalTeams: current.finalTeams.filter((id) => id !== teamId),
             finalWinnerId:
               current.finalWinnerId === teamId ? null : current.finalWinnerId,
+            buzzer:
+              current.buzzer.winner?.teamId === teamId
+                ? {
+                    ...current.buzzer,
+                    winner: null,
+                  }
+                : current.buzzer,
             gameEvents: appendEvent(current, {
               label: 'Team',
               teamId,
@@ -701,6 +676,10 @@ export function useQuizStore() {
             finalModeActive: false,
             finalTeams: [],
             finalWinnerId: null,
+            buzzer: {
+              isEnabled: false,
+              winner: null,
+            },
             gameEvents: appendEvent(current, {
               label: 'Team',
               pointsChanged: 0,
@@ -722,6 +701,17 @@ export function useQuizStore() {
           ...current,
           showScores: !current.showScores,
         }));
+      },
+      setBuzzerEnabled(isEnabled: boolean) {
+        void updateBuzzerState({
+          action: 'set-enabled',
+          isEnabled,
+        });
+      },
+      resetBuzzerWinner() {
+        void updateBuzzerState({
+          action: 'reset-winner',
+        });
       },
       setFinalTeams(teamIds: string[]) {
         commit((current) => ({
@@ -768,10 +758,17 @@ export function useQuizStore() {
         }));
       },
       resetGame() {
-        commit(() => createDefaultQuizState());
+        commit((current) => ({
+          ...createDefaultQuizState(),
+          teams: current.teams.map((team) => ({
+            ...team,
+            score: 0,
+            members: [...(team.members ?? [])],
+          })),
+        }));
       },
     }),
-    [commit],
+    [commit, updateBuzzerState],
   );
 
   return {

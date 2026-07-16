@@ -129,6 +129,19 @@ export type GameEvent = {
   note: string;
 };
 
+export type BuzzerWinner = {
+  teamId: string;
+  teamName: string;
+  teamIcon?: string;
+  teamColor?: string;
+  buzzedAt: number;
+};
+
+export type BuzzerState = {
+  isEnabled: boolean;
+  winner: BuzzerWinner | null;
+};
+
 export type QuizState = {
   teams: Team[];
   answered: Record<string, boolean>;
@@ -141,6 +154,7 @@ export type QuizState = {
   finalModeActive: boolean;
   finalTeams: string[];
   finalWinnerId: string | null;
+  buzzer: BuzzerState;
   gameEvents: GameEvent[];
   updatedAt: number;
 };
@@ -277,6 +291,10 @@ export function createDefaultQuizState(): QuizState {
     finalModeActive: false,
     finalTeams: [],
     finalWinnerId: null,
+    buzzer: {
+      isEnabled: false,
+      winner: null,
+    },
     gameEvents: [],
     updatedAt: Date.now(),
   };

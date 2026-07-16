@@ -1,21 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  quizMeta,
-  type AdminSection,
-  type Team,
-} from '@/components/quiz/config';
+import { quizMeta, type AdminSection } from '@/components/quiz/config';
 import { DashboardPage } from '@/components/quiz/admin/dashboard-page';
 import { FinalePage } from '@/components/quiz/admin/finale-page';
 import { HistoryPage } from '@/components/quiz/admin/history-page';
 import { QuizzesPage } from '@/components/quiz/admin/quizzes-page';
 import { ScoresPage } from '@/components/quiz/admin/scores-page';
-import {
-  buildTeamDraft,
-  getAdminSectionStatus,
-  type TeamDraft,
-} from '@/components/quiz/admin/shared';
+import { getAdminSectionStatus } from '@/components/quiz/admin/shared';
 import { TeamsPage } from '@/components/quiz/admin/teams-page';
 import {
   FrameButton,
@@ -35,7 +27,6 @@ const adminSections: Array<{ id: AdminSection; label: string }> = [
 
 export function AdminPage() {
   const [activeSection, setActiveSection] = useState<AdminSection>('dashboard');
-  const [teamDrafts, setTeamDrafts] = useState<Record<string, TeamDraft>>({});
   const {
     state,
     ranking,
@@ -65,51 +56,6 @@ export function AdminPage() {
     );
   }
 
-  function updateDraft(team: Team, updates: Partial<TeamDraft>) {
-    setTeamDrafts((current) => ({
-      ...current,
-      [team.id]: {
-        ...(current[team.id] ?? buildTeamDraft(team)),
-        ...updates,
-      },
-    }));
-
-    const liveUpdates: {
-      name?: string;
-      color?: string;
-      icon?: string;
-    } = {};
-
-    if (typeof updates.name === 'string') {
-      liveUpdates.name = updates.name.trim() || team.name;
-    }
-
-    if (typeof updates.color === 'string') {
-      liveUpdates.color = updates.color.trim() || team.color;
-    }
-
-    if (typeof updates.icon === 'string') {
-      liveUpdates.icon = updates.icon.trim() || team.icon;
-    }
-
-    if (Object.keys(liveUpdates).length > 0) {
-      actions.syncTeam(team.id, liveUpdates);
-    }
-  }
-
-  function saveTeam(team: Team) {
-    const draft = teamDrafts[team.id] ?? buildTeamDraft(team);
-    actions.updateTeam(team.id, {
-      name: draft.name.trim() || team.name,
-      color: draft.color.trim() || team.color,
-      icon: draft.icon.trim() || team.icon,
-      members: draft.members
-        .split(',')
-        .map((entry) => entry.trim())
-        .filter(Boolean),
-    });
-  }
-
   function openQuizzesFromTeams() {
     actions.openQuizzesSelection();
     setActiveSection('quizzes');
@@ -121,10 +67,6 @@ export function AdminPage() {
         return (
           <TeamsPage
             teams={state.teams}
-            teamDrafts={teamDrafts}
-            updateDraft={updateDraft}
-            saveTeam={saveTeam}
-            onAddTeam={actions.addTeam}
             onDeleteAllTeams={actions.deleteAllTeams}
             onDeleteTeam={actions.deleteTeam}
             onOpenQuizzes={openQuizzesFromTeams}
@@ -175,6 +117,7 @@ export function AdminPage() {
             answeredCount={answeredCount}
             remainingQuestions={remainingQuestions}
             totalQuestions={totalQuestions}
+            buzzer={state.buzzer}
             onNewGame={() => {
               actions.startNewGame();
               setActiveSection('teams');
@@ -183,6 +126,9 @@ export function AdminPage() {
               actions.resumeGame();
               setActiveSection('quizzes');
             }}
+            onEnableBuzzer={() => actions.setBuzzerEnabled(true)}
+            onDisableBuzzer={() => actions.setBuzzerEnabled(false)}
+            onResetBuzzer={actions.resetBuzzerWinner}
           />
         );
     }

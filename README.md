@@ -20,6 +20,23 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Quiz backend
+
+The quiz app now includes a small Next.js backend at `app/api/quiz-state/route.ts`.
+
+- `GET /api/quiz-state` loads the shared quiz state
+- `PUT /api/quiz-state` stores the full quiz state
+- `DELETE /api/quiz-state` resets the shared quiz state
+
+The backend persists the current game to `data/runtime/quiz-state.json`. That runtime file is ignored by git and is intended for local or single-instance hosting.
+
+## Buzzer
+
+- `GET|PUT|POST /api/buzzer` powers the mobile buzzer flow
+- `/buzzer` is the phone page where each team picks its own name, emoji, and color
+- the admin dashboard can activate, deactivate, and reset the buzzer state
+- the presentation view shows the first team that buzzed until the admin resets it
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

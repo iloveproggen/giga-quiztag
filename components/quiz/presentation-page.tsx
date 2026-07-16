@@ -3,6 +3,7 @@
 import { getTotalQuestionCount, quizMeta } from '@/components/quiz/config';
 import { HydrationPlaceholder } from '@/components/quiz/ui';
 import { BoardView } from '@/components/quiz/presentation/board-view';
+import { BuzzerOverlay } from '@/components/quiz/presentation/buzzer-overlay';
 import { FinalView } from '@/components/quiz/presentation/final-view';
 import { GamingView } from '@/components/quiz/presentation/gaming-view';
 import { GeneralKnowledgeView } from '@/components/quiz/presentation/general-knowledge-view';
@@ -108,6 +109,7 @@ export function PresentationPage() {
           remainingQuestions={remainingQuestions}
         />
 
+        <BuzzerOverlay buzzer={state.buzzer} />
         <div className="min-h-0 flex-1 overflow-hidden">{renderMainView()}</div>
       </div>
     </div>
