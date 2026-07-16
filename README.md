@@ -28,7 +28,11 @@ The quiz app now includes a small Next.js backend at `app/api/quiz-state/route.t
 - `PUT /api/quiz-state` stores the full quiz state
 - `DELETE /api/quiz-state` resets the shared quiz state
 
-The backend persists the current game to `data/runtime/quiz-state.json`. That runtime file is ignored by git and is intended for local or single-instance hosting.
+The backend persists the current game to `data/runtime/quiz-state.json` in local development.
+
+On Vercel, the app now automatically falls back to `/tmp/giga-quiztag/runtime/quiz-state.json`, because the deployment filesystem under `/var/task` is read-only. You can override the storage location with `QUIZ_STATE_DIRECTORY`.
+
+Important: `/tmp` on Vercel is ephemeral. It avoids the 500 error, but the stored quiz state can still disappear on cold starts and is not shared across multiple function instances. For durable production quiz sessions, move the state to a real shared store.
 
 ## Buzzer
 
