@@ -9,6 +9,7 @@ export function VodafoneEstimatesView({
 }) {
   return (
     <SubquizOverview
+      subquiz="vodafone-schaetzfragen"
       eyebrow="Vodafone Schaetzfragen"
       title="Zahlen, Volumen, Netze"
       description="Das ausgewaehlte Unterquiz wird hier als fixes Raster ohne Scrollen gezeigt. Jede Kachel steht fuer eine Frage und zeigt nur ihre Kategorie."

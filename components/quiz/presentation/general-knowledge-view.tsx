@@ -1,4 +1,5 @@
 import { getQuestionKey } from '@/components/quiz/config';
+import { getSubquizPalette } from '@/components/quiz/presentation/presentation-utils';
 import { generalKnowledgeSections } from '@/components/quiz/presentation/subquiz-content';
 import { StatusPill } from '@/components/quiz/ui';
 
@@ -7,6 +8,7 @@ export function GeneralKnowledgeView({
 }: {
   answered: Record<string, boolean>;
 }) {
+  const palette = getSubquizPalette('allgemeinwissen');
   const rowCount = Math.max(...generalKnowledgeSections.map((section) => section.items.length));
   const answeredCount = generalKnowledgeSections.reduce(
     (count, section) =>
@@ -21,11 +23,17 @@ export function GeneralKnowledgeView({
     <section
       className="flex h-full min-h-0 flex-col overflow-hidden rounded-[24px] border text-white shadow-[0_1px_2px_rgba(15,23,42,0.16),0_10px_30px_rgba(15,23,42,0.2)]"
       style={{
-        backgroundColor: '#0f172a',
-        borderColor: '#1e293b',
+        background: palette.sectionBackground,
+        borderColor: palette.sectionBorder,
       }}
     >
-      <div className="shrink-0 border-b border-slate-800 px-6 py-5">
+      <div
+        className="shrink-0 border-b px-6 py-5"
+        style={{
+          backgroundColor: palette.headerBackground,
+          borderColor: palette.headerBorder,
+        }}
+      >
         <p className="text-sm font-semibold uppercase tracking-[0.08em] text-slate-300">
           Allgemeinwissen
         </p>
@@ -55,8 +63,8 @@ export function GeneralKnowledgeView({
           <div
             className="flex items-center justify-center rounded-[20px] border px-3 py-3 text-center"
             style={{
-              backgroundColor: '#020617',
-              borderColor: '#1e293b',
+              backgroundColor: palette.cardBackground,
+              borderColor: palette.cardBorder,
             }}
           >
             <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-400">
@@ -69,8 +77,8 @@ export function GeneralKnowledgeView({
               key={section.id}
               className="flex items-center justify-center rounded-[20px] border px-3 py-3 text-center"
               style={{
-                backgroundColor: '#020617',
-                borderColor: '#1e293b',
+                backgroundColor: palette.cardBackground,
+                borderColor: palette.cardBorder,
               }}
             >
               <p className="text-lg font-semibold tracking-tight text-white">
@@ -84,8 +92,8 @@ export function GeneralKnowledgeView({
               <div
                 className="flex flex-col items-center justify-center rounded-[20px] border px-3 py-3 text-center"
                 style={{
-                  backgroundColor: '#020617',
-                  borderColor: '#1e293b',
+                  backgroundColor: palette.cardBackground,
+                  borderColor: palette.cardBorder,
                 }}
               >
                 <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-400">
@@ -105,8 +113,8 @@ export function GeneralKnowledgeView({
                       key={`${section.id}-empty-${rowIndex + 1}`}
                       className="rounded-[20px] border border-dashed"
                       style={{
-                        backgroundColor: '#020617',
-                        borderColor: '#1e293b',
+                        backgroundColor: palette.ghostBackground,
+                        borderColor: palette.cardBorder,
                       }}
                     />
                   );
@@ -121,8 +129,12 @@ export function GeneralKnowledgeView({
                     key={item.id}
                     className="flex flex-col items-center justify-center rounded-[20px] border px-3 py-3 text-center"
                     style={{
-                      backgroundColor: done ? '#064e3b' : '#020617',
-                      borderColor: done ? '#34d399' : '#1e293b',
+                      backgroundColor: done
+                        ? palette.answeredBackground
+                        : palette.cardBackground,
+                      borderColor: done
+                        ? palette.answeredBorder
+                        : palette.cardBorder,
                     }}
                   >
                     {done ? (

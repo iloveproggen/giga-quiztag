@@ -9,6 +9,7 @@ export function GamingView({
 }) {
   return (
     <SubquizOverview
+      subquiz="gaming"
       eyebrow="Gaming"
       title="Multiple-Choice Arena"
       description="Das ausgewaehlte Unterquiz wird hier als fixes Raster ohne Scrollen gezeigt. Jede Kachel steht fuer eine Frage und zeigt nur ihre Kategorie."

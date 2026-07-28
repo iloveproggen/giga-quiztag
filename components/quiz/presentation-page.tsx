@@ -94,7 +94,7 @@ export function PresentationPage() {
       case 'vodafone-schaetzfragen':
         return <VodafoneEstimatesView answered={state.answered} />;
       default:
-        return <BoardView />;
+        return <BoardView answered={state.answered} />;
     }
   }
 

@@ -1,4 +1,6 @@
 import { StatusPill } from '@/components/quiz/ui';
+import type { SubquizView } from '@/components/quiz/config';
+import { getSubquizPalette } from '@/components/quiz/presentation/presentation-utils';
 
 export type SubquizOverviewTile = {
   id: string;
@@ -7,6 +9,7 @@ export type SubquizOverviewTile = {
 };
 
 export function SubquizOverview({
+  subquiz,
   eyebrow,
   title,
   description,
@@ -14,6 +17,7 @@ export function SubquizOverview({
   tiles,
   columns,
 }: {
+  subquiz: SubquizView;
   eyebrow: string;
   title: string;
   description: string;
@@ -22,16 +26,23 @@ export function SubquizOverview({
   columns: number;
 }) {
   const uniqueCategories = [...new Set(tiles.map((tile) => tile.category))];
+  const palette = getSubquizPalette(subquiz);
 
   return (
     <section
       className="flex h-full min-h-0 flex-col overflow-hidden rounded-[24px] border text-white shadow-[0_1px_2px_rgba(15,23,42,0.16),0_10px_30px_rgba(15,23,42,0.2)]"
       style={{
-        backgroundColor: '#0f172a',
-        borderColor: '#1e293b',
+        background: palette.sectionBackground,
+        borderColor: palette.sectionBorder,
       }}
     >
-      <div className="shrink-0 border-b border-slate-800 px-6 py-5">
+      <div
+        className="shrink-0 border-b px-6 py-5"
+        style={{
+          backgroundColor: palette.headerBackground,
+          borderColor: palette.headerBorder,
+        }}
+      >
         <p className="text-sm font-semibold uppercase tracking-[0.08em] text-slate-300">
           {eyebrow}
         </p>
@@ -57,8 +68,12 @@ export function SubquizOverview({
               key={tile.id}
               className="rounded-[28px] border text-white shadow-[0_1px_2px_rgba(15,23,42,0.2),0_10px_30px_rgba(15,23,42,0.24)]"
               style={{
-                backgroundColor: tile.answered ? '#064e3b' : '#020617',
-                borderColor: tile.answered ? '#34d399' : '#1e293b',
+                backgroundColor: tile.answered
+                  ? palette.answeredBackground
+                  : palette.cardBackground,
+                borderColor: tile.answered
+                  ? palette.answeredBorder
+                  : palette.cardBorder,
               }}
             >
               <div className="flex h-full flex-col items-center justify-center px-4 py-4 text-center">
