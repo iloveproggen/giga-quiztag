@@ -13,9 +13,6 @@ export function QuestionView({
   if (!selectedQuestion) {
     return (
       <IntroView
-        title="Naechste Frage folgt gleich"
-        message="Das Admin-Fenster waehlt gerade die naechste Kategorie oder wechselt zur Punkteansicht."
-        tone="neutral"
       />
     );
   }
