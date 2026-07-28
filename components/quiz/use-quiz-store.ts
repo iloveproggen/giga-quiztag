@@ -352,6 +352,7 @@ export function useQuizStore() {
             score: 0,
             members: [...(team.members ?? [])],
           })),
+          isBuzzerSignupOverlayVisible: current.isBuzzerSignupOverlayVisible,
           gameStatus: 'idle',
           presentationView: 'board',
         }));
@@ -708,6 +709,12 @@ export function useQuizStore() {
           isEnabled,
         });
       },
+      setBuzzerSignupOverlayVisible(isVisible: boolean) {
+        commit((current) => ({
+          ...current,
+          isBuzzerSignupOverlayVisible: isVisible,
+        }));
+      },
       resetBuzzerWinner() {
         void updateBuzzerState({
           action: 'reset-winner',
@@ -765,6 +772,7 @@ export function useQuizStore() {
             score: 0,
             members: [...(team.members ?? [])],
           })),
+          isBuzzerSignupOverlayVisible: current.isBuzzerSignupOverlayVisible,
         }));
       },
     }),

@@ -154,6 +154,7 @@ export type QuizState = {
   finalModeActive: boolean;
   finalTeams: string[];
   finalWinnerId: string | null;
+  isBuzzerSignupOverlayVisible: boolean;
   buzzer: BuzzerState;
   gameEvents: GameEvent[];
   updatedAt: number;
@@ -291,6 +292,7 @@ export function createDefaultQuizState(): QuizState {
     finalModeActive: false,
     finalTeams: [],
     finalWinnerId: null,
+    isBuzzerSignupOverlayVisible: true,
     buzzer: {
       isEnabled: false,
       winner: null,

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "dummy:team": "node scripts/add-dummy-team.mjs"
   },
   "dependencies": {
     "@mantine/core": "^9.4.1",

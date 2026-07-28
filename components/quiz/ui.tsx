@@ -113,22 +113,24 @@ export function TeamAvatar({
   color,
   label,
   size = 'default',
+  className = '',
 }: {
   color?: string;
   label: string;
   size?: 'small' | 'default' | 'large';
+  className?: string;
 }) {
   const sizeClass =
     size === 'small'
       ? 'h-9 w-9 text-sm'
       : size === 'large'
-        ? 'h-16 w-16 text-2xl'
+        ? 'h-30 w-30 text-2xl'
         : 'h-12 w-12 text-lg';
 
   return (
     <Avatar
       radius="lg"
-      className={sizeClass}
+      className={`${sizeClass} ${className}`.trim()}
       styles={{
         root: {
           backgroundColor: color ?? '#e5e7eb',

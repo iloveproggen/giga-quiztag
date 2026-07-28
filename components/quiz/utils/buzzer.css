@@ -1,0 +1,50 @@
+@keyframes buzzer-gradient-drift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.buzzer-overlay {
+  opacity: 0;
+  transform: translateY(10px) scale(0.4);
+  background-image: linear-gradient(120deg, #7b2ea1 0%, #33478a 45%, #79adc2 100%);
+  background-size: 200% 200%;
+  animation: buzzer-gradient-drift 14s ease-in-out infinite;
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease;
+  will-change: opacity, transform;
+}
+
+.buzzer-overlay-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.buzzer-overlay-hidden {
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .buzzer-overlay {
+    transition: none;
+    transform: none;
+    animation: none;
+  }
+
+  .buzzer-overlay-visible,
+  .buzzer-overlay-hidden {
+    opacity: 1;
+    transform: none;
+  }
+}

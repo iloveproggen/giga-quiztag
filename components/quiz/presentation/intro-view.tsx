@@ -1,60 +1,66 @@
 import type { Team } from '@/components/quiz/config';
-import { StatusPill, TeamAvatar } from '@/components/quiz/ui';
+import { TeamAvatar } from '@/components/quiz/ui';
+import { generateBuzzerQRCode } from '../utils/generateBuzzerQRCode';
 
 export function IntroView({
-  title,
-  message,
-  tone,
   teams = [],
 }: {
-  title: string;
-  message: string;
-  tone: 'neutral' | 'warning';
   teams?: Team[];
 }) {
   return (
-    <section className="ui-panel flex h-full min-h-0 items-center justify-center overflow-hidden border-slate-800 bg-slate-900 px-8 py-10 text-white">
-      <div className="max-w-5xl text-center">
-        <StatusPill tone={tone}>{tone === 'warning' ? 'Pause' : 'Bereit'}</StatusPill>
-        <h2 className="mt-5 text-5xl font-bold tracking-tight">{title}</h2>
-        <p className="mt-4 text-xl leading-8 text-slate-300">{message}</p>
-
-        <div className="mt-8">
-          <p className="text-sm font-semibold uppercase tracking-[0.08em] text-slate-400">
-            Aktuelle Teams
-          </p>
-
-          {teams.length > 0 ? (
-            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+    <div>
+      <header className="ui-panel border-slate-800 bg-slate-900 px-20 py-20 text-white">
+        <div>
+          <div className="space-y-4 flex flex-row items-center justify-between">
+            <div className="flex-col flex">
+              <p className="text-9xl font-bold tracking-tight text-slate-200">
+                Teams erstellen!
+              </p>
+              <p className="mt-10 text-5xl text-slate-300">Nutzt ein Handy pro Team und scannt den QR-Code.</p>
+            </div>
+            <section className="ui-panel px-6 py-6 text-slate-900">
+              <div>
+                {generateBuzzerQRCode(300)}
+              </div>
+            </section>
+          </div>
+        </div>
+      </header>
+      <section className="mt-6 rounded-xl border border-slate-800 bg-slate-900 px-20 py-20 text-left text-white w-full h-full">
+            <p className="text-5xl font-semibold tracking-tight text-slate-200">
+              Aktuelle Teams
+            </p>
+        {teams.length > 0 ? (
+          <div>
+            <div className="grid max-h-[50vh] overflow-auto md:grid-cols-3">
               {teams.map((team) => (
                 <div
                   key={team.id}
-                  className="ui-panel flex items-center gap-4 rounded-[28px] border-slate-800 bg-slate-950 px-5 py-4 text-left text-white"
+                  className="flex items-center rounded-lg border-slate-800 bg-slate-950 px-5 py-5 mt-5 mr-5 text-left text-white"
                 >
-                  <TeamAvatar
-                    size="small"
-                    color={team.color}
-                    label={team.icon || team.name.charAt(0)}
-                  />
+                  <div className="avatar w-16 h-16 flex border border-slate-800 items-center justify-center text-white">
+                    {team.icon || team.name.charAt(0)}
+                  </div>
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
-                      Team
+                    <p className="text-md font-semibold uppercase tracking-[0.08em] text-slate-500">
+                      {team.id}
                     </p>
-                    <p className="mt-1 text-lg font-semibold tracking-tight text-white">
+                    <p className="mt-1 text-2xl font-semibold tracking-tight text-white">
                       {team.name}
                     </p>
                   </div>
                 </div>
               ))}
             </div>
-          ) : (
-            <p className="mt-4 text-base leading-7 text-slate-400">
-              Es wurden noch keine Teams angelegt. Erstelle sie jetzt im
-              Admin-Panel.
+          </div>
+        ) : (
+          <div>
+            <p className="text-base leading-7 text-slate-600">
+              Noch keine!
             </p>
-          )}
-        </div>
-      </div>
-    </section>
+          </div>
+        )}
+      </section>
+    </div>
   );
 }

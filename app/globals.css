@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "../components/quiz/utils/buzzer.css";
 
 html,
 body {
@@ -20,6 +21,68 @@ body {
 
 a {
   color: inherit;
+}
+
+:root {
+  --subquiz-vodafone-accent: #ef476f;
+  --subquiz-vodafone-accent-rgb: 239, 71, 111;
+  --subquiz-vodafone-section-background: #641e2f;
+  --subquiz-vodafone-section-border: rgba(var(--subquiz-vodafone-accent-rgb), 0.78);
+  --subquiz-vodafone-header-background: rgba(var(--subquiz-vodafone-accent-rgb), 0.32);
+  --subquiz-vodafone-header-border: rgba(var(--subquiz-vodafone-accent-rgb), 0.58);
+  --subquiz-vodafone-card-background: rgba(var(--subquiz-vodafone-accent-rgb), 0.28);
+  --subquiz-vodafone-card-border: rgba(var(--subquiz-vodafone-accent-rgb), 0.56);
+  --subquiz-vodafone-answered-background: rgba(var(--subquiz-vodafone-accent-rgb), 0.5);
+  --subquiz-vodafone-answered-border: var(--subquiz-vodafone-accent);
+  --subquiz-vodafone-ghost-background: rgba(var(--subquiz-vodafone-accent-rgb), 0.2);
+
+  --subquiz-musik-accent: #ffd166;
+  --subquiz-musik-accent-rgb: 255, 209, 102;
+  --subquiz-musik-section-background: #6b582b;
+  --subquiz-musik-section-border: rgba(var(--subquiz-musik-accent-rgb), 0.78);
+  --subquiz-musik-header-background: rgba(var(--subquiz-musik-accent-rgb), 0.32);
+  --subquiz-musik-header-border: rgba(var(--subquiz-musik-accent-rgb), 0.58);
+  --subquiz-musik-card-background: rgba(var(--subquiz-musik-accent-rgb), 0.28);
+  --subquiz-musik-card-border: rgba(var(--subquiz-musik-accent-rgb), 0.56);
+  --subquiz-musik-answered-background: rgba(var(--subquiz-musik-accent-rgb), 0.5);
+  --subquiz-musik-answered-border: var(--subquiz-musik-accent);
+  --subquiz-musik-ghost-background: rgba(var(--subquiz-musik-accent-rgb), 0.2);
+
+  --subquiz-allgemeinwissen-accent: #06d6a0;
+  --subquiz-allgemeinwissen-accent-rgb: 6, 214, 160;
+  --subquiz-allgemeinwissen-section-background: #035a43;
+  --subquiz-allgemeinwissen-section-border: rgba(var(--subquiz-allgemeinwissen-accent-rgb), 0.78);
+  --subquiz-allgemeinwissen-header-background: rgba(var(--subquiz-allgemeinwissen-accent-rgb), 0.32);
+  --subquiz-allgemeinwissen-header-border: rgba(var(--subquiz-allgemeinwissen-accent-rgb), 0.58);
+  --subquiz-allgemeinwissen-card-background: rgba(var(--subquiz-allgemeinwissen-accent-rgb), 0.28);
+  --subquiz-allgemeinwissen-card-border: rgba(var(--subquiz-allgemeinwissen-accent-rgb), 0.56);
+  --subquiz-allgemeinwissen-answered-background: rgba(var(--subquiz-allgemeinwissen-accent-rgb), 0.5);
+  --subquiz-allgemeinwissen-answered-border: var(--subquiz-allgemeinwissen-accent);
+  --subquiz-allgemeinwissen-ghost-background: rgba(var(--subquiz-allgemeinwissen-accent-rgb), 0.2);
+
+  --subquiz-gaming-accent: #118ab2;
+  --subquiz-gaming-accent-rgb: 17, 138, 178;
+  --subquiz-gaming-section-background: #073a4b;
+  --subquiz-gaming-section-border: rgba(var(--subquiz-gaming-accent-rgb), 0.78);
+  --subquiz-gaming-header-background: rgba(var(--subquiz-gaming-accent-rgb), 0.32);
+  --subquiz-gaming-header-border: rgba(var(--subquiz-gaming-accent-rgb), 0.58);
+  --subquiz-gaming-card-background: rgba(var(--subquiz-gaming-accent-rgb), 0.28);
+  --subquiz-gaming-card-border: rgba(var(--subquiz-gaming-accent-rgb), 0.56);
+  --subquiz-gaming-answered-background: rgba(var(--subquiz-gaming-accent-rgb), 0.5);
+  --subquiz-gaming-answered-border: var(--subquiz-gaming-accent);
+  --subquiz-gaming-ghost-background: rgba(var(--subquiz-gaming-accent-rgb), 0.2);
+
+  --subquiz-filme-serien-accent: #54428e;
+  --subquiz-filme-serien-accent-rgb: 84, 66, 142;
+  --subquiz-filme-serien-section-background: #231c3c;
+  --subquiz-filme-serien-section-border: rgba(var(--subquiz-filme-serien-accent-rgb), 0.78);
+  --subquiz-filme-serien-header-background: rgba(var(--subquiz-filme-serien-accent-rgb), 0.32);
+  --subquiz-filme-serien-header-border: rgba(var(--subquiz-filme-serien-accent-rgb), 0.58);
+  --subquiz-filme-serien-card-background: rgba(var(--subquiz-filme-serien-accent-rgb), 0.28);
+  --subquiz-filme-serien-card-border: rgba(var(--subquiz-filme-serien-accent-rgb), 0.56);
+  --subquiz-filme-serien-answered-background: rgba(var(--subquiz-filme-serien-accent-rgb), 0.5);
+  --subquiz-filme-serien-answered-border: var(--subquiz-filme-serien-accent);
+  --subquiz-filme-serien-ghost-background: rgba(var(--subquiz-filme-serien-accent-rgb), 0.2);
 }
 
 .ui-shell {

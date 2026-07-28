@@ -112,10 +112,10 @@ export async function PUT(request: Request) {
 
     const icon = normalizeTeamIcon(payload.icon);
     const color = normalizeTeamColor(payload.color);
-    const requestedTeamId =
-      typeof payload.teamId === 'string' && payload.teamId.trim()
-        ? payload.teamId.trim()
-        : crypto.randomUUID();
+    let requestedTeamId = Math.floor(Math.random() * 1000000).toString();
+    while (requestedTeamId.length < 6) {
+      requestedTeamId = '0' + requestedTeamId;
+    }
 
     const result = await updateQuizState((currentState) => {
       const existingTeam = currentState.teams.find(

@@ -3,11 +3,15 @@ import { StatusPill, TeamAvatar } from '@/components/quiz/ui';
 
 export function TeamsPage({
   teams,
+  isBuzzerSignupOverlayVisible,
+  onToggleBuzzerSignupOverlay,
   onDeleteAllTeams,
   onDeleteTeam,
   onOpenQuizzes,
 }: {
   teams: Team[];
+  isBuzzerSignupOverlayVisible: boolean;
+  onToggleBuzzerSignupOverlay: (isVisible: boolean) => void;
   onDeleteAllTeams: () => void;
   onDeleteTeam: (teamId: string) => void;
   onOpenQuizzes: () => void;
@@ -28,6 +32,16 @@ export function TeamsPage({
           </div>
 
           <div className="flex flex-wrap gap-3">
+            <label className="inline-flex cursor-pointer items-center gap-3 rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-900">
+              <input
+                type="checkbox"
+                className="h-4 w-4"
+                checked={isBuzzerSignupOverlayVisible}
+                onChange={(event) =>
+                  onToggleBuzzerSignupOverlay(event.currentTarget.checked)}
+              />
+              QR-Overlay in Praesentation anzeigen
+            </label>
             <button
               className="rounded-lg border border-red-900 px-5 py-3 text-left font-bold text-red-900"
               onClick={onDeleteAllTeams}

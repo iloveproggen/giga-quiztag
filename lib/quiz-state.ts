@@ -279,6 +279,10 @@ export function normalizeQuizState(value: unknown): QuizState {
       : [],
     finalWinnerId:
       typeof value.finalWinnerId === 'string' ? value.finalWinnerId : null,
+    isBuzzerSignupOverlayVisible:
+      typeof value.isBuzzerSignupOverlayVisible === 'boolean'
+        ? value.isBuzzerSignupOverlayVisible
+        : true,
     buzzer: normalizeBuzzerState(value.buzzer),
     gameEvents,
     updatedAt:

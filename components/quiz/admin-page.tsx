@@ -67,6 +67,8 @@ export function AdminPage() {
         return (
           <TeamsPage
             teams={state.teams}
+            isBuzzerSignupOverlayVisible={state.isBuzzerSignupOverlayVisible}
+            onToggleBuzzerSignupOverlay={actions.setBuzzerSignupOverlayVisible}
             onDeleteAllTeams={actions.deleteAllTeams}
             onDeleteTeam={actions.deleteTeam}
             onOpenQuizzes={openQuizzesFromTeams}

@@ -16,6 +16,7 @@ import { ScoresView } from '@/components/quiz/presentation/scores-view';
 import { StatsView } from '@/components/quiz/presentation/stats-view';
 import { VodafoneEstimatesView } from '@/components/quiz/presentation/vodafone-estimates-view';
 import { useQuizStore } from '@/components/quiz/use-quiz-store';
+import { BuzzerComponent } from './utils/buzzerComponent';
 
 export function PresentationPage() {
   const { state, ranking, isHydrated } = useQuizStore();
@@ -40,9 +41,6 @@ export function PresentationPage() {
     if (state.gameStatus === 'idle') {
       return (
         <IntroView
-          title={quizMeta.title}
-          message="Das Quiz wurde vorbereitet. Der Start erfolgt gleich aus dem Admin-Fenster."
-          tone="neutral"
           teams={state.teams}
         />
       );
@@ -99,18 +97,19 @@ export function PresentationPage() {
   }
 
   return (
-    <div className="h-[100dvh] overflow-hidden bg-slate-950 p-4 md:p-6">
-      <div className="ui-shell flex h-full flex-col gap-6 overflow-hidden">
-        <PresentationHeader
+    <div className="h-[100dvh] overflow-hidden bg-slate-950 p-20">
+      <div className="flex h-full w-full flex-col gap-6 overflow-hidden">
+        {/* <PresentationHeader
           title={quizMeta.title}
           subtitle={quizMeta.subtitle}
           gameStatus={state.gameStatus}
           presentationView={state.presentationView}
           remainingQuestions={remainingQuestions}
-        />
+        /> */}      
+        <BuzzerComponent isVisible={state.isBuzzerSignupOverlayVisible} />
 
         <BuzzerOverlay buzzer={state.buzzer} />
-        <div className="min-h-0 flex-1 overflow-hidden">{renderMainView()}</div>
+        <div className="min-h-0 w-full flex-1 overflow-hidden">{renderMainView()}</div>
       </div>
     </div>
   );
