@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const baseUrl = process.env.QUIZ_BASE_URL ?? 'http://localhost:3000';
+const baseUrl = process.env.QUIZ_BASE_URL ?? 'http://192.168.0.151:3000';
 const teamName = process.argv[2] ?? `Dummy Team ${Date.now()}`;
 const teamColor = process.argv[3] ?? '#60a5fa';
 const teamIcon = process.argv[4] ?? 'D';
